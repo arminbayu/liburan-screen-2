@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Liburan Akhir Tahun</title>
     <meta name="theme-color" content="#ff7ab6" />
-
     <style>
         :root {
             --shadow: 0 22px 70px rgba(0, 0, 0, .25);
@@ -28,7 +27,6 @@
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
         }
 
-        /* ====== STAGE FULLSCREEN ====== */
         .stage {
             position: fixed;
             inset: 0;
@@ -37,54 +35,44 @@
             background: #000;
         }
 
-        /* ====== BACKGROUND FULLSCREEN (cover + blur) ====== */
+        /* ===== BG fullscreen ===== */
         .bg {
             position: absolute;
-            inset: -40px;
-            /* biar blur tidak kelihatan tepi */
+            inset: -50px;
             background-image: var(--poster-url);
             background-size: cover;
             background-position: center;
-            filter: blur(22px) saturate(1.15) brightness(.9);
-            transform: scale(1.08);
-            animation: bgDrift 10s ease-in-out infinite alternate;
+            filter: blur(22px) saturate(1.2) brightness(.9);
+            transform: scale(1.10);
+            animation: bgDrift 9s ease-in-out infinite alternate;
         }
 
         @keyframes bgDrift {
             from {
-                transform: scale(1.08) translateX(-1.2%) translateY(-1%);
+                transform: scale(1.10) translateX(-1.2%) translateY(-1%);
             }
 
             to {
-                transform: scale(1.12) translateX(1.2%) translateY(1%);
+                transform: scale(1.16) translateX(1.2%) translateY(1%);
             }
         }
 
-        /* vignette biar fokus ke tengah */
         .vignette {
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(closest-side at 50% 50%, rgba(0, 0, 0, 0) 0 60%, rgba(0, 0, 0, .35) 100%);
+                radial-gradient(closest-side at 50% 50%, rgba(0, 0, 0, 0) 0 62%, rgba(0, 0, 0, .38) 100%);
             pointer-events: none;
         }
 
-        /* ====== POSTER LAYER (contain, tidak kepotong) ====== */
+        /* ===== Poster BESAR ===== */
         .posterWrap {
             position: relative;
-            width: min(92vw, 1100px);
-            height: min(92vh, 700px);
+            width: min(98vw, 1800px);
+            height: min(96vh, 980px);
             display: grid;
             place-items: center;
             z-index: 5;
-        }
-
-        /* 16:9 safe area untuk TV */
-        @media (min-aspect-ratio: 16/9) {
-            .posterWrap {
-                width: min(88vw, 1200px);
-                height: min(80vh, 720px);
-            }
         }
 
         .poster {
@@ -94,37 +82,36 @@
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            /* PENTING: tidak kepotong */
-            filter: drop-shadow(0 22px 50px rgba(0, 0, 0, .28));
+            filter: drop-shadow(0 28px 70px rgba(0, 0, 0, .35));
             transform-origin: center;
-            animation: posterFloat 3.6s ease-in-out infinite;
+            animation: posterFloat 3.4s ease-in-out infinite;
         }
 
         @keyframes posterFloat {
 
             0%,
             100% {
-                transform: translateY(0) scale(1);
+                transform: translateY(0) scale(1.12);
             }
 
             50% {
-                transform: translateY(-10px) scale(1.01);
+                transform: translateY(-12px) scale(1.15);
             }
         }
 
-        /* frame lucu biar kaya “panggung” */
         .frameGlow {
             position: absolute;
-            inset: -10px;
-            border-radius: 26px;
+            inset: -16px;
+            border-radius: 30px;
             background:
-                radial-gradient(closest-side at 20% 20%, rgba(255, 74, 160, .22), transparent 60%),
-                radial-gradient(closest-side at 80% 30%, rgba(43, 183, 255, .22), transparent 62%),
-                radial-gradient(closest-side at 55% 85%, rgba(46, 230, 198, .18), transparent 62%);
+                radial-gradient(closest-side at 20% 20%, rgba(255, 74, 160, .26), transparent 60%),
+                radial-gradient(closest-side at 80% 30%, rgba(43, 183, 255, .26), transparent 62%),
+                radial-gradient(closest-side at 55% 85%, rgba(46, 230, 198, .20), transparent 62%),
+                radial-gradient(closest-side at 40% 60%, rgba(255, 211, 61, .18), transparent 62%);
             filter: blur(18px);
             z-index: -1;
-            opacity: .9;
-            animation: glowMove 8s ease-in-out infinite alternate;
+            opacity: .95;
+            animation: glowMove 7s ease-in-out infinite alternate;
         }
 
         @keyframes glowMove {
@@ -133,11 +120,11 @@
             }
 
             to {
-                transform: translate(1%, 1%) scale(1.05);
+                transform: translate(1%, 1%) scale(1.06);
             }
         }
 
-        /* ====== OVERLAY ANIMATIONS ====== */
+        /* ===== FX layers ===== */
         .layer {
             position: absolute;
             inset: 0;
@@ -146,19 +133,27 @@
             overflow: hidden;
         }
 
-        /* bubbles canvas */
         canvas#bubbles {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
-            opacity: .75;
+            opacity: .85;
         }
 
-        /* falling flowers */
+        canvas#sparkles {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: .85;
+            mix-blend-mode: screen;
+        }
+
+        /* ===== Falling flowers (lebih besar + rame) ===== */
         .fall-flower {
             position: absolute;
-            top: -12vh;
+            top: -18vh;
             left: var(--x);
             width: var(--s);
             height: var(--s);
@@ -166,28 +161,28 @@
             transform: translate(-50%, -50%) rotate(var(--r));
             animation:
                 fallDown var(--dur) linear infinite,
-                swayX calc(var(--dur)*.35) ease-in-out infinite alternate,
+                swayX calc(var(--dur)*.30) ease-in-out infinite alternate,
                 spin calc(var(--dur)*.55) linear infinite;
-            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .06));
+            filter: drop-shadow(0 12px 20px rgba(0, 0, 0, .08));
         }
 
         @keyframes fallDown {
             from {
-                transform: translate(-50%, -15vh) rotate(var(--r));
+                transform: translate(-50%, -20vh) rotate(var(--r));
             }
 
             to {
-                transform: translate(-50%, 120vh) rotate(calc(var(--r) + 140deg));
+                transform: translate(-50%, 125vh) rotate(calc(var(--r) + 200deg));
             }
         }
 
         @keyframes swayX {
             from {
-                margin-left: -22px
+                margin-left: -40px
             }
 
             to {
-                margin-left: 22px
+                margin-left: 40px
             }
         }
 
@@ -201,50 +196,83 @@
             }
         }
 
-        .fall-flower::before {
+        /* tipe 1: bunga bulat */
+        .fall-flower.round::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .95) 0 18%, rgba(255, 255, 255, 0) 19%),
+                radial-gradient(circle at 50% 15%, var(--c) 0 30%, rgba(0, 0, 0, 0) 31%),
+                radial-gradient(circle at 85% 50%, var(--c) 0 30%, rgba(0, 0, 0, 0) 31%),
+                radial-gradient(circle at 50% 85%, var(--c) 0 30%, rgba(0, 0, 0, 0) 31%),
+                radial-gradient(circle at 15% 50%, var(--c) 0 30%, rgba(0, 0, 0, 0) 31%),
+                radial-gradient(circle at 70% 25%, rgba(255, 255, 255, .55) 0 16%, rgba(0, 0, 0, 0) 17%);
+        }
+
+        /* tipe 2: kelopak panjang (lebih “lucu”) */
+        .fall-flower.petal::before {
             content: "";
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .95) 0 18%, rgba(255, 255, 255, 0) 19%),
-                radial-gradient(circle at 50% 15%, var(--c) 0 28%, rgba(0, 0, 0, 0) 29%),
-                radial-gradient(circle at 85% 50%, var(--c) 0 28%, rgba(0, 0, 0, 0) 29%),
-                radial-gradient(circle at 50% 85%, var(--c) 0 28%, rgba(0, 0, 0, 0) 29%),
-                radial-gradient(circle at 15% 50%, var(--c) 0 28%, rgba(0, 0, 0, 0) 29%);
-            border-radius: 50%;
+                radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, .95) 0 14%, rgba(255, 255, 255, 0) 16%),
+                radial-gradient(ellipse at 50% 6%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 85% 25%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 94% 55%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 85% 85%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 50% 94%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 15% 85%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 6% 55%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(ellipse at 15% 25%, var(--c) 0 26%, rgba(0, 0, 0, 0) 27%),
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .55) 0 14%, rgba(0, 0, 0, 0) 15%);
+            border-radius: 40%;
+            filter: saturate(1.05);
         }
 
-        /* balloons (top area biar tidak nutup teks) */
+        /* ===== Balloons (lebih banyak + besar) ===== */
         .balloon {
             position: absolute;
-            left: -25vw;
+            left: -35vw;
             top: var(--y);
             width: var(--w);
-            height: calc(var(--w)*1.25);
+            height: calc(var(--w)*1.30);
             opacity: var(--o);
             animation:
                 flyAcross var(--dur) linear infinite,
-                bobY calc(var(--dur)*.18) ease-in-out infinite alternate;
-            filter: drop-shadow(0 16px 26px rgba(0, 0, 0, .10));
+                bobY calc(var(--dur)*.16) ease-in-out infinite alternate,
+                twist calc(var(--dur)*.22) ease-in-out infinite alternate;
+            filter: drop-shadow(0 18px 30px rgba(0, 0, 0, .12));
         }
 
         @keyframes flyAcross {
             from {
-                transform: translateX(-25vw)
+                transform: translateX(-35vw)
             }
 
             to {
-                transform: translateX(140vw)
+                transform: translateX(150vw)
             }
         }
 
         @keyframes bobY {
             from {
-                margin-top: -10px
+                margin-top: -14px
             }
 
             to {
-                margin-top: 10px
+                margin-top: 14px
+            }
+        }
+
+        @keyframes twist {
+            from {
+                rotate: -2deg
+            }
+
+            to {
+                rotate: 2deg
             }
         }
 
@@ -252,12 +280,18 @@
             width: 100%;
             height: 100%;
             border-radius: 999px;
+            position: relative;
             background:
-                radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 45%),
+                radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .62), rgba(255, 255, 255, 0) 48%),
                 linear-gradient(145deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, 0)),
                 var(--grad);
-            border: 1px solid rgba(255, 255, 255, .55);
-            position: relative;
+            border: 1px solid rgba(255, 255, 255, .60);
+        }
+
+        .balloon.heart .body {
+            border-radius: 0;
+            clip-path: path("M50 18 C50 4 30 0 22 10 C10 26 30 40 50 56 C70 40 90 26 78 10 C70 0 50 4 50 18 Z");
+            transform: scale(1.2);
         }
 
         .balloon .knot {
@@ -266,7 +300,7 @@
             bottom: -10px;
             width: 16px;
             height: 14px;
-            transform: translateX(-50%) rotate(8deg);
+            transform: translateX(-50%) rotate(10deg);
             background: var(--knot);
             clip-path: polygon(50% 0, 0 100%, 100% 100%);
             border-radius: 2px;
@@ -277,13 +311,25 @@
             left: 50%;
             top: calc(100% + 2px);
             width: 2px;
-            height: calc(var(--w) * 1.1);
+            height: calc(var(--w) * 1.25);
             transform: translateX(-50%);
             background: rgba(0, 0, 0, .18);
             border-radius: 99px;
         }
 
-        /* ====== Controls kecil (optional) ====== */
+        .balloon .string::after {
+            content: "";
+            position: absolute;
+            left: -6px;
+            top: 18%;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 0, 0, .14);
+            opacity: .35;
+        }
+
+        /* Controls */
         .controls {
             position: fixed;
             left: 16px;
@@ -304,11 +350,6 @@
             background: rgba(255, 255, 255, .78);
             box-shadow: var(--shadow);
             font-weight: 800;
-        }
-
-        .btn:hover {
-            filter: brightness(1.03);
-            transform: translateY(-1px);
         }
 
         .hint {
@@ -341,8 +382,7 @@
 </head>
 
 <body>
-    <div class="stage" id="stage">
-        <!-- ubah poster-url di JS -->
+    <div class="stage">
         <div class="bg"></div>
         <div class="vignette"></div>
 
@@ -351,9 +391,9 @@
             <div class="poster" aria-label="Poster Liburan"></div>
         </div>
 
-        <!-- overlay effects -->
-        <div class="layer" id="fxLayer">
+        <div class="layer">
             <canvas id="bubbles"></canvas>
+            <canvas id="sparkles"></canvas>
             <div id="flowersFall"></div>
             <div id="balloons"></div>
         </div>
@@ -361,46 +401,39 @@
 
     <div class="controls">
         <button class="btn" id="btnFs">⛶ Fullscreen</button>
-        <button class="btn" id="btnRefresh">✨ Refresh FX</button>
+        <button class="btn" id="btnRefresh">✨ Rame-in Lagi</button>
         <div class="hint">Tip: tekan <b>F</b> untuk fullscreen</div>
     </div>
 
     <script>
-        // ===============================
-        // 1) SET POSTER URL DI SINI
-        // ===============================
-        // Taruh file poster di folder yg sama: poster.jpg / poster.png
-        const POSTER_URL = "liburan.png"; // <-- GANTI INI!
-
-        // apply ke CSS variable
+        // ====== GANTI NAMA FILE POSTER ======
+        const POSTER_URL = "liburan.png"; // contoh: poster.png
         document.documentElement.style.setProperty('--poster-url', `url("${POSTER_URL}")`);
 
-        // ===============================
-        // 2) Falling flowers + balloons
-        // ===============================
+        // ====== FLOWERS (lebih rame + lebih besar) ======
         const flowerColors = [
-            'rgba(255, 74, 160, .70)',
-            'rgba(124, 77, 255, .60)',
-            'rgba(43, 183, 255, .65)',
-            'rgba(46, 230, 198, .55)',
-            'rgba(255, 211, 61, .65)',
-            'rgba(255, 138, 61, .58)'
+            'rgba(255, 74, 160, .78)',
+            'rgba(124, 77, 255, .68)',
+            'rgba(43, 183, 255, .74)',
+            'rgba(46, 230, 198, .62)',
+            'rgba(255, 211, 61, .72)',
+            'rgba(255, 138, 61, .66)'
         ];
-
         const flowersFall = document.getElementById('flowersFall');
-        const balloonsEl = document.getElementById('balloons');
 
         function spawnFallingFlowers() {
             flowersFall.innerHTML = '';
-            const count = Math.max(24, Math.floor((innerWidth * innerHeight) / 52000));
+            const count = Math.max(48, Math.floor((innerWidth * innerHeight) / 26000)); // LEBIH BANYAK
             for (let i = 0; i < count; i++) {
                 const f = document.createElement('div');
-                f.className = 'fall-flower';
-                const s = (Math.random() * 26 + 18);
+                const type = Math.random() < 0.55 ? 'round' : 'petal';
+                f.className = 'fall-flower ' + type;
+
+                const s = (Math.random() * 48 + 34);          // 34..82 (LEBIH BESAR)
                 const x = (Math.random() * 100) + '%';
                 const r = (Math.random() * 360) + 'deg';
-                const dur = (Math.random() * 10 + 10) + 's';
-                const o = (Math.random() * 0.45 + 0.25);
+                const dur = (Math.random() * 10 + 9) + 's';   // 9..19
+                const o = (Math.random() * 0.45 + 0.35);      // lebih terlihat
                 const c = flowerColors[Math.floor(Math.random() * flowerColors.length)];
 
                 f.style.setProperty('--s', s + 'px');
@@ -409,11 +442,15 @@
                 f.style.setProperty('--dur', dur);
                 f.style.setProperty('--o', o);
                 f.style.setProperty('--c', c);
-                f.style.animationDelay = (-Math.random() * 12) + 's';
+
+                // delay negative biar langsung rame dari awal
+                f.style.animationDelay = (-Math.random() * 18) + 's';
                 flowersFall.appendChild(f);
             }
         }
 
+        // ====== BALLOONS (lebih banyak + variasi) ======
+        const balloonsEl = document.getElementById('balloons');
         const balloonGradients = [
             { grad: 'linear-gradient(180deg, #ff9bd0, #ff4aa0)', knot: '#ff4aa0' },
             { grad: 'linear-gradient(180deg, #98e8ff, #2bb7ff)', knot: '#2bb7ff' },
@@ -425,20 +462,19 @@
 
         function spawnBalloons() {
             balloonsEl.innerHTML = '';
-            const n = Math.max(7, Math.floor(innerWidth / 220));
-
+            const n = Math.max(12, Math.floor(innerWidth / 150)); // LEBIH BANYAK
             for (let i = 0; i < n; i++) {
                 const b = document.createElement('div');
-                b.className = 'balloon';
-
                 const pick = balloonGradients[Math.floor(Math.random() * balloonGradients.length)];
-                const w = Math.random() * 38 + 46;
 
-                // Biar tidak nutup teks: balon lewat di area atas (2%..35%)
-                const y = (Math.random() * 33 + 2) + '%';
+                // sebagian balon hati
+                const isHeart = Math.random() < 0.22;
+                b.className = 'balloon' + (isHeart ? ' heart' : '');
 
-                const dur = (Math.random() * 18 + 18) + 's';
-                const o = (Math.random() * 0.25 + 0.55);
+                const w = Math.random() * 70 + 70;              // 70..140 (LEBIH BESAR)
+                const y = (Math.random() * 42 + 2) + '%';       // area atas biar gak ganggu teks
+                const dur = (Math.random() * 16 + 14) + 's';    // lebih cepat biar rame
+                const o = (Math.random() * 0.25 + 0.60);
 
                 b.style.setProperty('--w', w + 'px');
                 b.style.setProperty('--y', y);
@@ -446,134 +482,162 @@
                 b.style.setProperty('--o', o);
                 b.style.setProperty('--grad', pick.grad);
                 b.style.setProperty('--knot', pick.knot);
-                b.style.animationDelay = (-Math.random() * 20) + 's';
+
+                b.style.animationDelay = (-Math.random() * dur) + 's';
 
                 b.innerHTML = `
         <div class="body" style="--grad:${pick.grad}">
           <div class="knot" style="background:${pick.knot}"></div>
           <div class="string"></div>
-        </div>
-      `;
+        </div>`;
                 balloonsEl.appendChild(b);
             }
         }
 
-        function refreshFX() {
-            spawnFallingFlowers();
-            spawnBalloons();
-            initBubbles(true);
-        }
-
-        // ===============================
-        // 3) Bubbles canvas (transparent)
-        // ===============================
-        const canvas = document.getElementById('bubbles');
-        const ctx = canvas.getContext('2d');
+        // ====== BUBBLES (lebih banyak + lebih besar) ======
+        const bubbles = document.getElementById('bubbles');
+        const bctx = bubbles.getContext('2d');
         let dpr = 1;
         let blobs = [];
-        const MAX = 80;
+        const BMAX = 140; // LEBIH BANYAK
 
-        function resizeCanvas() {
+        function resizeCanvas(c) {
             dpr = Math.min(devicePixelRatio || 1, 2);
-            canvas.width = Math.floor(innerWidth * dpr);
-            canvas.height = Math.floor(innerHeight * dpr);
-            canvas.style.width = innerWidth + 'px';
-            canvas.style.height = innerHeight + 'px';
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.scale(dpr, dpr);
+            c.width = Math.floor(innerWidth * dpr);
+            c.height = Math.floor(innerHeight * dpr);
+            c.style.width = innerWidth + 'px';
+            c.style.height = innerHeight + 'px';
         }
 
         function rand(min, max) { return Math.random() * (max - min) + min; }
 
         function initBubbles(reset = false) {
             if (reset) blobs = [];
-            resizeCanvas();
+            resizeCanvas(bubbles);
+            bctx.setTransform(1, 0, 0, 1, 0, 0);
+            bctx.scale(dpr, dpr);
+
             if (blobs.length === 0) {
-                for (let i = 0; i < MAX; i++) {
+                for (let i = 0; i < BMAX; i++) {
                     blobs.push({
                         x: rand(0, innerWidth),
                         y: rand(0, innerHeight),
-                        r: rand(6, 20),
-                        vx: rand(-0.22, 0.22),
-                        vy: rand(-0.30, 0.18),
-                        a: rand(0.10, 0.55),
+                        r: rand(8, 34),          // LEBIH BESAR
+                        vx: rand(-0.28, 0.28),
+                        vy: rand(-0.34, 0.22),
+                        a: rand(0.08, 0.32)      // transparan
                     });
                 }
             }
         }
 
         function drawBubbles() {
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            bctx.clearRect(0, 0, innerWidth, innerHeight);
             for (const b of blobs) {
-                b.x += b.vx;
-                b.y += b.vy;
+                b.x += b.vx; b.y += b.vy;
+                if (b.x < -60) b.x = innerWidth + 60;
+                if (b.x > innerWidth + 60) b.x = -60;
+                if (b.y < -60) b.y = innerHeight + 60;
+                if (b.y > innerHeight + 60) b.y = -60;
 
-                if (b.x < -40) b.x = innerWidth + 40;
-                if (b.x > innerWidth + 40) b.x = -40;
-                if (b.y < -40) b.y = innerHeight + 40;
-                if (b.y > innerHeight + 40) b.y = -40;
-
-                // bubble main
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${b.a})`;
-                ctx.fill();
+                // fill
+                bctx.beginPath();
+                bctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                bctx.fillStyle = `rgba(255,255,255,${b.a})`;
+                bctx.fill();
 
                 // rim
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255,255,255,${Math.min(b.a + 0.12, 0.75)})`;
-                ctx.lineWidth = 1.2;
-                ctx.stroke();
+                bctx.beginPath();
+                bctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                bctx.strokeStyle = `rgba(255,255,255,${Math.min(b.a + 0.18, 0.55)})`;
+                bctx.lineWidth = 1.4;
+                bctx.stroke();
 
                 // highlight
-                ctx.beginPath();
-                ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.35, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${Math.min(b.a + 0.18, 0.8)})`;
-                ctx.fill();
+                bctx.beginPath();
+                bctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.32, 0, Math.PI * 2);
+                bctx.fillStyle = `rgba(255,255,255,${Math.min(b.a + 0.22, 0.62)})`;
+                bctx.fill();
             }
             requestAnimationFrame(drawBubbles);
         }
 
-        // ===============================
-        // 4) Fullscreen
-        // ===============================
+        // ====== SPARKLES (bintang kecil berkelip) ======
+        const spark = document.getElementById('sparkles');
+        const sctx = spark.getContext('2d');
+        let stars = [];
+        const SMAX = 120;
+
+        function initSparkles(reset = false) {
+            if (reset) stars = [];
+            resizeCanvas(spark);
+            sctx.setTransform(1, 0, 0, 1, 0, 0);
+            sctx.scale(dpr, dpr);
+
+            if (stars.length === 0) {
+                for (let i = 0; i < SMAX; i++) {
+                    stars.push({
+                        x: rand(0, innerWidth),
+                        y: rand(0, innerHeight),
+                        r: rand(1.2, 3.6),
+                        a: rand(0.15, 0.65),
+                        s: rand(0.008, 0.02)
+                    });
+                }
+            }
+        }
+
+        function drawSparkles() {
+            sctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (const st of stars) {
+                st.a += (Math.random() < 0.5 ? -st.s : st.s);
+                st.a = Math.max(0.08, Math.min(0.75, st.a));
+
+                sctx.beginPath();
+                sctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+                sctx.fillStyle = `rgba(255,255,255,${st.a})`;
+                sctx.fill();
+            }
+            requestAnimationFrame(drawSparkles);
+        }
+
+        // ====== refresh all ======
+        function refreshFX() {
+            spawnFallingFlowers();
+            spawnBalloons();
+            initBubbles(true);
+            initSparkles(true);
+        }
+
+        refreshFX();
+        initBubbles();
+        initSparkles();
+        drawBubbles();
+        drawSparkles();
+
+        addEventListener('resize', () => {
+            refreshFX();
+            initBubbles();
+            initSparkles();
+        });
+
+        // ===== fullscreen =====
         const btnFs = document.getElementById('btnFs');
         async function enterFullscreen() {
-            try {
-                if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
-            } catch (e) { }
+            try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); } catch (e) { }
             document.body.classList.toggle('fullscreen', !!document.fullscreenElement);
         }
-        function exitFullscreen() {
-            if (document.fullscreenElement) document.exitFullscreen();
-        }
-        btnFs.addEventListener('click', () => {
-            if (document.fullscreenElement) exitFullscreen();
-            else enterFullscreen();
-        });
+        function exitFullscreen() { if (document.fullscreenElement) document.exitFullscreen(); }
+        btnFs.addEventListener('click', () => document.fullscreenElement ? exitFullscreen() : enterFullscreen());
         addEventListener('keydown', (e) => {
             if (e.key === 'f' || e.key === 'F') {
                 e.preventDefault();
-                if (document.fullscreenElement) exitFullscreen();
-                else enterFullscreen();
+                document.fullscreenElement ? exitFullscreen() : enterFullscreen();
             }
         });
         document.addEventListener('fullscreenchange', () => {
             document.body.classList.toggle('fullscreen', !!document.fullscreenElement);
             btnFs.textContent = document.fullscreenElement ? '⤢ Exit' : '⛶ Fullscreen';
-        });
-
-        // ===============================
-        // init
-        // ===============================
-        refreshFX();
-        initBubbles();
-        drawBubbles();
-
-        addEventListener('resize', () => {
-            refreshFX();
-            initBubbles();
         });
 
         document.getElementById('btnRefresh').addEventListener('click', refreshFX);
